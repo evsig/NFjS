@@ -5,6 +5,7 @@ const   score = document.querySelector('.score'),
         car.classList.add('car');
 
 start.addEventListener('click', startGame);
+score.addEventListener('click', stopGame);
 document.addEventListener('keydown', startRun);
 document.addEventListener('keyup', stopRun);
 
@@ -24,15 +25,16 @@ const setting = {
 
 /*по высоте элемента вычисляется их кол-во на странице*/
 function getQuantityElements(heightElement){
-    return document.documentElement.clientHeight / heightElement + 1;
+    return Math.ceil(gameArea.offsetHeight / heightElement);
+    //return document.documentElement.clientHeight / heightElement + 1;
 }
 
 function startGame(){
     start.classList.add('hide');
     gameArea.innerHTML = '';
-    car.style.left = '125px';
     car.style.top = 'auto';
-    for (let i = 0; i < getQuantityElements(100); i++) {
+    car.style.left = gameArea.offsetWidth/2 - car.offsetWidth/2;
+    for (let i = 0; i < getQuantityElements(100) + 1; i++) {
         const line = document.createElement('div');
         line.classList.add('line');
         line.style.top = (i * 100) + 'px'; //расстояние между линиями
@@ -43,10 +45,13 @@ function startGame(){
     for (let i = 0; i < getQuantityElements(100 * setting.traffic); i++){
         const enemy = document.createElement('div');
         enemy.classList.add('enemy');
+        let enemyImg = Math.floor(Math.random() * 4) + 1;
+        console.log('enemyImg: ', enemyImg);
         enemy.y = -100 * setting.traffic * (i+1);
         enemy.style.left = Math.floor(Math.random() * (gameArea.offsetWidth - 50)) + 'px';
         enemy.style.top = enemy.y + 'px';
-        enemy.style.background = 'transparent url(./image/enemy.png) center / cover no-repeat';
+        enemy.style.background = 'transparent url(./image/enemy' + enemyImg + '.png) center / cover no-repeat';
+        console.log('enemy.style.background: ', enemy.style.background);
         gameArea.appendChild(enemy);
 
     }
@@ -100,14 +105,21 @@ function moveRoad() {
     lines.forEach(function(line){
         line.y += setting.speed; //движение дорожной разметки
         line.style.top = line.y + 'px'; //
-    if (line.y >= document.documentElement.clientHeight) //когда линия скрывается за высоту экрана
-        line.y = -100;
+    if (line.y >= document.documentElement.clientHeight) {//когда линия скрывается за высоту экрана
+        line.y = -100;}
 });
 }
 
-function moveEnemy(){
+function stopGame() {
+    setting.start = false;
+    start.classList.remove('hide');
+    start.style.top = score.offsetHeight;
+}
+
+function moveEnemy() {
     let enemy = document.querySelectorAll('.enemy');
-    enemy.forEach(function(item){
+    
+    enemy.forEach(function(item) {
         let carRect = car.getBoundingClientRect();
         let enemyRect = item.getBoundingClientRect();
 
@@ -115,9 +127,7 @@ function moveEnemy(){
             carRect.right >= enemyRect.left &&
             carRect.left <= enemyRect.right &&
             carRect.bottom >= enemyRect.top){
-             setting.start = false;
-            start.classList.remove('hide');
-            start.style.top = score.offsetHeight;
+                stopGame();
         }
         item.y += setting.speed / 2;
         item.style.top = item.y + 'px';
