@@ -63,18 +63,19 @@ table {
     bottom: 10px;
 
 }
+
 .game {
     display: flex;
     height: 100%;
 }
 
 .gameArea {
-    display: flex;
     width: 300px;
-    height: 900px;
+    display: flex;
+    height: 100%;
     position: relative;
     margin: auto;
-    background: #134;
+    background: #334;
     overflow: hidden;
 }
 

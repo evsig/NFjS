@@ -37,7 +37,7 @@ function startGame(){
     for (let i = 0; i < getQuantityElements(100) + 1; i++) {
         const line = document.createElement('div');
         line.classList.add('line');
-        line.style.top = (i * 100) + 'px'; //расстояние между линиями
+        line.style.top = (i * 100) + 1 + 'px'; //расстояние между линиями
         line.y = i * 100;
         gameArea.appendChild(line);
     }
